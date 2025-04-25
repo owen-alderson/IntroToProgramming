@@ -159,45 +159,7 @@ void savingmode()
 {
     struct Book b;
     char buffer[100];
-
-    printf("Enter Book ID: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    while (!isValidInt(buffer))
-    {
-        printf("Invalid. Enter Book ID again: ");
-        fgets(buffer, sizeof(buffer), stdin);
-    }
-    b.book_id = atoi(buffer);
-
-    printf("Enter ISBN: ");
-    fgets(b.isbn, sizeof(b.isbn), stdin);
-    strtok(b.isbn, "\n");
-
-    printf("Enter Author(s): ");
-    fgets(b.authors, sizeof(b.authors), stdin);
-    strtok(b.authors, "\n");
-
-    printf("Enter Publication Year: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    while (!isValidInt(buffer))
-    {
-        printf("Invalid. Enter year again: ");
-        fgets(buffer, sizeof(buffer), stdin);
-    }
-    b.original_publication_year = atoi(buffer);
-
-    printf("Enter Book Title: ");
-    fgets(b.original_title, sizeof(b.original_title), stdin);
-    strtok(b.original_title, "\n");
-
-    printf("Enter Average Rating: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    while (isValidFloat(buffer) == -1)
-    {
-        printf("Invalid. Enter rating again: ");
-        fgets(buffer, sizeof(buffer), stdin);
-    }
-    b.average_rating = atof(buffer);
+    char choice;
 
     FILE *file = fopen(CSV_FILE, "a");
     if (!file)
@@ -206,14 +168,71 @@ void savingmode()
         return;
     }
 
-    // Other fields are skipped with placeholders
-    fprintf(file, "%d,0,0,0,0,%s,%s,%d,%s,eng,%.2f,0\n",
-            b.book_id, b.isbn, b.authors,
-            b.original_publication_year, b.original_title,
-            b.average_rating);
+    do
+    {
+        printf("\n--- Add a New Book ---\n");
+
+        // Book ID
+        printf("Enter Book ID: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        while (!isValidInt(buffer))
+        {
+            printf("Invalid. Enter Book ID again: ");
+            fgets(buffer, sizeof(buffer), stdin);
+        }
+        b.book_id = atoi(buffer);
+
+        // ISBN
+        printf("Enter ISBN: ");
+        fgets(b.isbn, sizeof(b.isbn), stdin);
+        b.isbn[strcspn(b.isbn, "\n")] = '\0'; // Trim newline
+
+        // Author(s)
+        printf("Enter Author(s): ");
+        fgets(b.authors, sizeof(b.authors), stdin);
+        b.authors[strcspn(b.authors, "\n")] = '\0';
+
+        // Publication Year
+        printf("Enter Publication Year: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        while (!isValidInt(buffer))
+        {
+            printf("Invalid. Enter year again: ");
+            fgets(buffer, sizeof(buffer), stdin);
+        }
+        b.original_publication_year = atoi(buffer);
+
+        // Title
+        printf("Enter Book Title: ");
+        fgets(b.original_title, sizeof(b.original_title), stdin);
+        b.original_title[strcspn(b.original_title, "\n")] = '\0';
+
+        // Average Rating
+        printf("Enter Average Rating: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        while (isValidFloat(buffer) == -1)
+        {
+            printf("Invalid. Enter rating again: ");
+            fgets(buffer, sizeof(buffer), stdin);
+        }
+        b.average_rating = atof(buffer);
+
+        // Write to file
+        fprintf(file, "%d,0,0,0,0,%s,%s,%d,%s,eng,%.2f,0\n",
+                b.book_id, b.isbn, b.authors,
+                b.original_publication_year, b.original_title,
+                b.average_rating);
+
+        printf("Book added successfully!\n");
+
+        // Ask if user wants to add another
+        printf("Would you like to add another book? (y/n): ");
+        choice = getchar();
+        while (getchar() != '\n'); // clear any extra input from buffer
+
+    } while (choice == 'y' || choice == 'Y');
 
     fclose(file);
-    printf("Book added successfully.\n");
 }
 
 // Main function (starts the program)
