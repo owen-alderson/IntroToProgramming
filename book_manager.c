@@ -59,7 +59,7 @@ void readBooks()
     scanf("%d", &searchChoice);
 
     printf("Enter search term: ");
-    sfgets(searchTerm, sizeof(searchTerm), stdin);
+    fgets(searchTerm, sizeof(searchTerm), stdin);
     searchTerm[strcspn(searchTerm, "\n")] = 0;
 
     char line[MAX_LINE];
