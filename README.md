@@ -23,4 +23,5 @@ Users can add new books or search for existing ones based on the author's name, 
 To compile the program, use the following command in your terminal:
 
 ```bash
-gcc -o book_manager book_manager.c
+gcc book_manager.c -o book_manager
+./book_manager
